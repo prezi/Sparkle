@@ -78,6 +78,9 @@ static NSString *const SUAutomaticUpdateAlertTouchBarIndentifier = @"" SPARKLE_B
     }
 }
 
+- (BOOL)allowsModifyAutomaticUpdatesPreferences {
+    return NO;
+}
 
 - (NSImage *__nonnull)applicationIcon
 {
