@@ -222,6 +222,8 @@ static NSString *const SUUpdateAlertTouchBarIndentifier = @"" SPARKLE_BUNDLE_IDE
         self.skipButton.enabled = NO;
     }
 
+    //disable skipping install
+    self.skipButton.hidden = YES;
     [self.window center];
 }
 

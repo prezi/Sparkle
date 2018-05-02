@@ -76,6 +76,8 @@ static NSString *const SUAutomaticUpdateAlertTouchBarIndentifier = @"" SPARKLE_B
     if ([self.updateItem isCriticalUpdate]) {
         self.skipButton.enabled = NO;
     }
+    //disable skipping install
+    self.skipButton.hidden = YES;
 }
 
 - (BOOL)allowsModifyAutomaticUpdatesPreferences {
