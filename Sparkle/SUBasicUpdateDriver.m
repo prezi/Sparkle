@@ -318,6 +318,10 @@
 {
     // finished. downloadData should be nil as this was a permanent download
     assert(self.updateItem);
+    id<SUUpdaterPrivate> updater = self.updater;
+    if ([[updater delegate] respondsToSelector:@selector(updater:didDownloadUpdate:)]) {
+        [[updater delegate] updater:self.updater didDownloadUpdate:self.updateItem];
+    }
     
     [self extractUpdate];
 }
@@ -353,28 +357,37 @@
     id<SUUpdaterPrivate> updater = self.updater;
     id<SUUnarchiverProtocol> unarchiver = [SUUnarchiver unarchiverForPath:self.downloadPath updatingHostBundlePath:self.host.bundlePath decryptionPassword:updater.decryptionPassword];
     
-    BOOL success;
+    BOOL success = NO;
     if (!unarchiver) {
         SULog(SULogLevelError, @"Error: No valid unarchiver for %@!", self.downloadPath);
-        
-        success = NO;
     } else {
+        self.updateValidator = [[SUUpdateValidator alloc] initWithDownloadPath:self.downloadPath signatures:self.updateItem.signatures host:self.host];
+
         // Currently unsafe archives are the only case where we can prevalidate before extraction, but that could change in the future
-        BOOL needsPrevalidation = [[unarchiver class] unsafeIfArchiveIsNotValidated];
-        
-        self.updateValidator = [[SUUpdateValidator alloc] initWithDownloadPath:self.downloadPath dsaSignature:self.updateItem.DSASignature host:self.host performingPrevalidation:needsPrevalidation];
-        
-        success = self.updateValidator.canValidate;
+        BOOL needsPrevalidation = [[unarchiver class] mustValidateBeforeExtraction];
+
+        if (needsPrevalidation) {
+            success = [self.updateValidator validateDownloadPath];
+        } else {
+            success = YES;
+        }
     }
     
     if (!success) {
         NSError *reason = [NSError errorWithDomain:SUSparkleErrorDomain code:SUUnarchivingError userInfo:@{NSLocalizedDescriptionKey: @"Failed to extract update."}];
         [self unarchiverDidFailWithError:reason];
     } else {
+        if ([[updater delegate] respondsToSelector:@selector(updater:willExtractUpdate:)]) {
+            [[updater delegate] updater:self.updater willExtractUpdate:self.updateItem];
+        }
+        
         [unarchiver unarchiveWithCompletionBlock:^(NSError *err){
             if (err) {
                 [self unarchiverDidFailWithError:err];
                 return;
+            }
+            if ([[updater delegate] respondsToSelector:@selector(updater:didExtractUpdate:)]) {
+                [[updater delegate] updater:self.updater didExtractUpdate:self.updateItem];
             }
             
             [self performSelectorOnMainThread:@selector(unarchiverDidFinish:) withObject:nil waitUntilDone:NO];
