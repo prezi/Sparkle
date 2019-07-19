@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
 
   s.platform = :osx, '10.13'
 
-  s.source   = { :git => "https://github.com/prezi/Sparkle.git", :tag => "#{s.version}"}
+  s.source   = { :git => "https://github.com/prezi/Sparkle.git", :branch => "feature/NAPPS-82-integrate-sparkle-to-pods"}
   s.source_files = 'Sparkle.framework/Versions/A/Headers/*.h'
 
   s.preserve_paths = 'bin/*'
