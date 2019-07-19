@@ -3,23 +3,13 @@ Pod::Spec.new do |s|
   s.version     = "1.21.2"
   s.summary     = "A software update framework for macOS"
   s.description = "Sparkle is an easy-to-use software update framework for Cocoa developers."
-  s.homepage    = "http://sparkle-project.org"
-  s.documentation_url = "http://sparkle-project.org/documentation/"
-  s.screenshot  = "http://sparkle-project.org/images/screenshot-noshadow@2x.png"
-  s.license     = {
-    :type => 'MIT',
-    :file => 'LICENSE'
-  }
-  s.authors     = {
-    'Mayur Pawashe' => 'zorgiepoo@gmail.com',
-    'Kornel Lesiński' => 'pornel@pornel.net',
-    'Jake Petroules' => 'jake.petroules@petroules.com',
-    'C.W. Betts' => 'computers57@hotmail.com',
-    'Andy Matuschak' => 'andy@andymatuschak.org',
-  }
+  s.homepage    = "https://prezi.com"
+  s.license     = { :type => "Commercial", :text => "See https://prezi.com/terms-of-use/" }
+  s.authors     = "Prezi"
 
-  s.platform = :osx, '10.7'
-  s.source   = { :http => "https://github.com/sparkle-project/Sparkle/releases/download/#{s.version}/Sparkle-#{s.version}.tar.bz2" }
+  s.platform = :osx, '10.13'
+
+  s.source   = { :git => "https://github.com/prezi/Sparkle.git", :tag => "#{s.version}"}
   s.source_files = 'Sparkle.framework/Versions/A/Headers/*.h'
 
   s.preserve_paths = 'bin/*'
